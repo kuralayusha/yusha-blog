@@ -32,6 +32,12 @@ const MenuBar = ({ editor }) => {
     editor.chain().focus().toggleCodeBlock({ language: codeLanguage }).run();
   };
 
+  const languages = [
+    'javascript', 'python', 'java', 'c', 'cpp', 'csharp', 'go', 'rust',
+    'swift', 'kotlin', 'php', 'ruby', 'scala', 'typescript', 'html', 'css',
+    'sql', 'bash', 'powershell', 'markdown'
+  ];
+
   return (
     <div className="flex flex-wrap gap-2 mb-4">
       <Select onValueChange={(value) => editor.chain().focus().toggleHeading({ level: parseInt(value) }).run()}>
@@ -65,10 +71,11 @@ const MenuBar = ({ editor }) => {
           <SelectValue placeholder="Select language" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="javascript">JavaScript</SelectItem>
-          <SelectItem value="python">Python</SelectItem>
-          <SelectItem value="html">HTML</SelectItem>
-          <SelectItem value="css">CSS</SelectItem>
+          {languages.map((lang) => (
+            <SelectItem key={lang} value={lang}>
+              {lang.charAt(0).toUpperCase() + lang.slice(1)}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
       <Button onClick={addCodeBlock}>Add Code Block</Button>
@@ -89,6 +96,7 @@ const EditorPage = () => {
       TextStyle,
       CodeBlockLowlight.configure({
         lowlight,
+        languageClassPrefix: 'language-',
       }),
     ],
     content: '<p>Start writing your blog here...</p>',
