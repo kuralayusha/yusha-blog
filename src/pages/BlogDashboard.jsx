@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from 'react-router-dom';
-import { CalendarIcon, ArrowRightIcon } from 'lucide-react';
+import { CalendarIcon, ArrowRightIcon, XCircleIcon } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const fetchBlogs = async () => {
   const response = await fetch('/blogs.json');
@@ -13,50 +15,153 @@ const fetchBlogs = async () => {
 };
 
 const BlogDashboard = () => {
-  const { data: blogs, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['blogs'],
     queryFn: fetchBlogs,
   });
+
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [tagInput, setTagInput] = useState('');
+
+  useEffect(() => {
+    if (data && data.blogs) {
+      filterBlogs();
+    }
+  }, [data, selectedTags]);
+
+  const filterBlogs = () => {
+    if (selectedTags.length === 0) {
+      setFilteredBlogs(data.blogs);
+    } else {
+      const filtered = data.blogs.filter(blog =>
+        selectedTags.every(tag => blog.tags.includes(tag))
+      );
+      const partialMatches = data.blogs.filter(blog =>
+        !filtered.includes(blog) && selectedTags.some(tag => blog.tags.includes(tag))
+      );
+      const otherBlogs = data.blogs.filter(blog =>
+        !filtered.includes(blog) && !partialMatches.includes(blog)
+      );
+      setFilteredBlogs([...filtered, ...partialMatches, ...otherBlogs]);
+    }
+  };
+
+  const handleTagClick = (tag) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter(t => t !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
+
+  const handleTagInput = (e) => {
+    setTagInput(e.target.value);
+    if (e.target.value.endsWith(' ')) {
+      const newTag = e.target.value.trim();
+      if (newTag && !selectedTags.includes(newTag)) {
+        setSelectedTags([...selectedTags, newTag]);
+      }
+      setTagInput('');
+    }
+  };
+
+  const removeTag = (tag) => {
+    setSelectedTags(selectedTags.filter(t => t !== tag));
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Yayın Akışı</h1>
-        <div className="flex items-center">
-          <span className="mr-2">Filtrele:</span>
-          <select className="border rounded p-1">
-            <option>TÜMÜ</option>
-          </select>
+      <div className="mb-6">
+        <Input
+          type="text"
+          placeholder="Enter tags (e.g., #react #javascript)"
+          value={tagInput}
+          onChange={handleTagInput}
+          className="mb-2"
+        />
+        <div className="flex flex-wrap gap-2 mb-2">
+          {selectedTags.map(tag => (
+            <Button
+              key={tag}
+              variant="outline"
+              size="sm"
+              onClick={() => removeTag(tag)}
+              className="flex items-center"
+            >
+              {tag}
+              <XCircleIcon className="ml-2 h-4 w-4" />
+            </Button>
+          ))}
         </div>
+        {selectedTags.length > 0 && (
+          <p className="text-sm text-gray-600">
+            Filtering by: {selectedTags.join(', ')}
+          </p>
+        )}
       </div>
+
       <div className="space-y-6">
-        {blogs.map((blog) => (
-          <Link to={`/${blog.slug}`} key={blog.id}>
-            <Card className="hover:shadow-md transition-shadow duration-300">
-              <CardContent className="p-0">
-                <div className="flex">
-                  <div className="w-1/4 relative">
-                    <img src={blog.image} alt={blog.title} className="w-full h-full object-cover" />
-                    <div className="absolute top-0 left-0 bg-orange-500 text-white px-2 py-1 text-xs uppercase">
-                      {blog.category || 'Uncategorized'}
+        {filteredBlogs.map((blog, index) => (
+          <React.Fragment key={blog.id}>
+            {index === 0 && selectedTags.length > 0 && (
+              <h2 className="text-xl font-semibold mb-4">
+                Blogs matching all selected tags:
+              </h2>
+            )}
+            {index === filteredBlogs.filter(b => 
+              selectedTags.every(tag => b.tags.includes(tag))
+            ).length && selectedTags.length > 0 && (
+              <h2 className="text-xl font-semibold mb-4">
+                Blogs matching some selected tags:
+              </h2>
+            )}
+            {index === filteredBlogs.filter(b => 
+              selectedTags.some(tag => b.tags.includes(tag))
+            ).length && selectedTags.length > 0 && (
+              <h2 className="text-xl font-semibold mb-4">
+                Other blogs:
+              </h2>
+            )}
+            <Link to={`/${blog.slug}`}>
+              <Card className="hover:shadow-md transition-shadow duration-300">
+                <CardContent className="p-0">
+                  <div className="flex">
+                    <div className="w-1/4 relative">
+                      <img src={blog.image} alt={blog.title} className="w-full h-full object-cover" />
                     </div>
-                  </div>
-                  <div className="w-3/4 p-4">
-                    <h2 className="text-xl font-semibold mb-2">{blog.title}</h2>
-                    <p className="text-sm text-gray-600 mb-2">{blog.author}</p>
-                    <div className="flex items-center text-sm text-gray-500">
-                      <CalendarIcon className="w-4 h-4 mr-1" />
-                      <span>{new Date(blog.date).toLocaleDateString()}</span>
+                    <div className="w-3/4 p-4">
+                      <h2 className="text-xl font-semibold mb-2">{blog.title}</h2>
+                      <p className="text-sm text-gray-600 mb-2">{blog.author}</p>
+                      <div className="flex items-center text-sm text-gray-500 mb-2">
+                        <CalendarIcon className="w-4 h-4 mr-1" />
+                        <span>{new Date(blog.date).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {blog.tags.map(tag => (
+                          <Button
+                            key={tag}
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleTagClick(tag);
+                            }}
+                          >
+                            {tag}
+                          </Button>
+                        ))}
+                      </div>
                       <ArrowRightIcon className="w-4 h-4 ml-auto" />
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
+                </CardContent>
+              </Card>
+            </Link>
+          </React.Fragment>
         ))}
       </div>
     </div>

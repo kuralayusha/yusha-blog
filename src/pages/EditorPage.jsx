@@ -86,6 +86,7 @@ const MenuBar = ({ editor }) => {
 const EditorPage = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
+  const [tags, setTags] = useState('');
   const [jsonContent, setJsonContent] = useState('');
 
   const editor = useEditor({
@@ -109,6 +110,7 @@ const EditorPage = () => {
       title,
       author,
       date: new Date().toISOString().split('T')[0],
+      tags: tags.split(',').map(tag => tag.trim()),
       content: {
         type: 'doc',
         content: editor.getJSON().content,
@@ -123,6 +125,7 @@ const EditorPage = () => {
       if (parsedContent.content) {
         setTitle(parsedContent.title || '');
         setAuthor(parsedContent.author || '');
+        setTags(parsedContent.tags ? parsedContent.tags.join(', ') : '');
         editor.commands.setContent(parsedContent.content);
       }
     } catch (error) {
@@ -151,6 +154,13 @@ const EditorPage = () => {
             placeholder="Author"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
+            className="mb-4"
+          />
+          <Input
+            type="text"
+            placeholder="Tags (comma-separated)"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
             className="mb-4"
           />
           <MenuBar editor={editor} />

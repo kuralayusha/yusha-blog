@@ -1,135 +1,142 @@
-[
-  {
-    "id": 1,
-    "slug": "getting-started-with-react",
-    "title": "Getting Started with React",
-    "author": "Jane Doe",
-    "date": "2023-03-15",
-    "image": "https://picsum.photos/seed/react/800/400",
-    "content": {
-      "type": "doc",
-      "content": [
-        {
-          "type": "heading",
-          "attrs": { "level": 1 },
-          "content": [{ "type": "text", "text": "Getting Started with React" }]
-        },
-        {
-          "type": "paragraph",
-          "content": [{ "type": "text", "text": "React is a popular JavaScript library for building user interfaces. In this blog post, we'll cover the basics of getting started with React." }]
-        },
-        {
-          "type": "heading",
-          "attrs": { "level": 2 },
-          "content": [{ "type": "text", "text": "Setting Up Your Development Environment" }]
-        },
-        {
-          "type": "paragraph",
-          "content": [{ "type": "text", "text": "Before we dive into React, let's set up our development environment. You'll need Node.js and npm installed on your machine." }]
-        },
-        {
-          "type": "codeBlock",
-          "attrs": { "language": "bash" },
-          "content": [{ "type": "text", "text": "npx create-react-app my-react-app\ncd my-react-app\nnpm start" }]
-        },
-        {
-          "type": "heading",
-          "attrs": { "level": 2 },
-          "content": [{ "type": "text", "text": "Understanding JSX" }]
-        },
-        {
-          "type": "paragraph",
-          "content": [{ "type": "text", "text": "JSX is a syntax extension for JavaScript that allows you to write HTML-like code in your JavaScript files. Here's a simple example:" }]
-        },
-        {
-          "type": "codeBlock",
-          "attrs": { "language": "jsx" },
-          "content": [{ "type": "text", "text": "const element = <h1>Hello, world!</h1>;" }]
-        }
-      ]
+{
+  "tags": ["#react", "#css", "#html", "#javascript", "#typescript", "#angular", "#vue", "#nodejs", "#express", "#mongodb"],
+  "blogs": [
+    {
+      "id": 1,
+      "slug": "getting-started-with-react",
+      "title": "Getting Started with React",
+      "author": "Jane Doe",
+      "date": "2023-03-15",
+      "image": "https://picsum.photos/seed/react/800/400",
+      "tags": ["#react", "#javascript"],
+      "content": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": { "level": 1 },
+            "content": [{ "type": "text", "text": "Getting Started with React" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "React is a popular JavaScript library for building user interfaces. In this blog post, we'll cover the basics of getting started with React." }]
+          },
+          {
+            "type": "heading",
+            "attrs": { "level": 2 },
+            "content": [{ "type": "text", "text": "Setting Up Your Development Environment" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "Before we dive into React, let's set up our development environment. You'll need Node.js and npm installed on your machine." }]
+          },
+          {
+            "type": "codeBlock",
+            "attrs": { "language": "bash" },
+            "content": [{ "type": "text", "text": "npx create-react-app my-react-app\ncd my-react-app\nnpm start" }]
+          },
+          {
+            "type": "heading",
+            "attrs": { "level": 2 },
+            "content": [{ "type": "text", "text": "Understanding JSX" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "JSX is a syntax extension for JavaScript that allows you to write HTML-like code in your JavaScript files. Here's a simple example:" }]
+          },
+          {
+            "type": "codeBlock",
+            "attrs": { "language": "jsx" },
+            "content": [{ "type": "text", "text": "const element = <h1>Hello, world!</h1>;" }]
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "slug": "mastering-css-grid",
+      "title": "Mastering CSS Grid",
+      "author": "John Smith",
+      "date": "2023-04-02",
+      "image": "https://picsum.photos/seed/cssgrid/800/400",
+      "tags": ["#css", "#html"],
+      "content": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": { "level": 1 },
+            "content": [{ "type": "text", "text": "Mastering CSS Grid" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "CSS Grid is a powerful layout system that allows you to create complex web layouts with ease. In this post, we'll explore some advanced techniques for mastering CSS Grid." }]
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "slug": "introduction-to-typescript",
+      "title": "Introduction to TypeScript",
+      "author": "Alice Johnson",
+      "date": "2023-05-20",
+      "image": "https://picsum.photos/seed/typescript/800/400",
+      "tags": ["#typescript", "#javascript"],
+      "content": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": { "level": 1 },
+            "content": [{ "type": "text", "text": "Introduction to TypeScript" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. In this blog post, we'll introduce you to the basics of TypeScript and its benefits." }]
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "slug": "cmd-dosya-listesi",
+      "title": "CMD'de Dosya Listesi Görüntüleme",
+      "author": "Volkan",
+      "date": "2023-06-15",
+      "image": "https://picsum.photos/seed/cmd/800/400",
+      "tags": ["#cmd", "#windows"],
+      "content": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": { "level": 1 },
+            "content": [
+              {
+                "type": "text",
+                "marks": [{ "type": "textStyle", "attrs": { "color": "#c62424" } }],
+                "text": "merhaba arkadaşlar ben volkan"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "marks": [{ "type": "textStyle", "attrs": { "color": "#000000" } }],
+                "text": "bugün sizlere cmd den olduğunuz konumun dosya listesini nasıl görebileceğinizin kodunu gösterecem"
+              }
+            ]
+          },
+          {
+            "type": "codeBlock",
+            "attrs": { "language": "powershell" },
+            "content": [{ "type": "text", "text": "dir" }]
+          }
+        ]
+      }
     }
-  },
-  {
-    "id": 2,
-    "slug": "mastering-css-grid",
-    "title": "Mastering CSS Grid",
-    "author": "John Smith",
-    "date": "2023-04-02",
-    "image": "https://picsum.photos/seed/cssgrid/800/400",
-    "content": {
-      "type": "doc",
-      "content": [
-        {
-          "type": "heading",
-          "attrs": { "level": 1 },
-          "content": [{ "type": "text", "text": "Mastering CSS Grid" }]
-        },
-        {
-          "type": "paragraph",
-          "content": [{ "type": "text", "text": "CSS Grid is a powerful layout system that allows you to create complex web layouts with ease. In this post, we'll explore some advanced techniques for mastering CSS Grid." }]
-        }
-      ]
-    }
-  },
-  {
-    "id": 3,
-    "slug": "introduction-to-typescript",
-    "title": "Introduction to TypeScript",
-    "author": "Alice Johnson",
-    "date": "2023-05-20",
-    "image": "https://picsum.photos/seed/typescript/800/400",
-    "content": {
-      "type": "doc",
-      "content": [
-        {
-          "type": "heading",
-          "attrs": { "level": 1 },
-          "content": [{ "type": "text", "text": "Introduction to TypeScript" }]
-        },
-        {
-          "type": "paragraph",
-          "content": [{ "type": "text", "text": "TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. In this blog post, we'll introduce you to the basics of TypeScript and its benefits." }]
-        }
-      ]
-    }
-  },
-  {
-    "id": 4,
-    "slug": "cmd-dosya-listesi",
-    "title": "CMD'de Dosya Listesi Görüntüleme",
-    "author": "Volkan",
-    "date": "2023-06-15",
-    "image": "https://picsum.photos/seed/cmd/800/400",
-    "content": {
-      "type": "doc",
-      "content": [
-        {
-          "type": "heading",
-          "attrs": { "level": 1 },
-          "content": [
-            {
-              "type": "text",
-              "marks": [{ "type": "textStyle", "attrs": { "color": "#c62424" } }],
-              "text": "merhaba arkadaşlar ben volkan"
-            }
-          ]
-        },
-        {
-          "type": "paragraph",
-          "content": [
-            {
-              "type": "text",
-              "marks": [{ "type": "textStyle", "attrs": { "color": "#000000" } }],
-              "text": "bugün sizlere cmd den olduğunuz konumun dosya listesini nasıl görebileceğinizin kodunu gösterecem"
-            }
-          ]
-        },
-        {
-          "type": "codeBlock",
-          "attrs": { "language": "powershell" },
-          "content": [{ "type": "text", "text": "dir" }]
-        }
-      ]
-    }
-  }
-]
+  ]
+}
