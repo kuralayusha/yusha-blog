@@ -24,7 +24,7 @@ const BlogDashboard = () => {
     if (data && data.blogs) {
       filterBlogs();
     }
-  }, [data, selectedTags, selectedBlog, searchTerm]);
+  }, [data, selectedTags, selectedBlog]);
 
   const filterBlogs = () => {
     if (!data || !data.blogs) return;
@@ -41,13 +41,6 @@ const BlogDashboard = () => {
       filtered = filtered.filter(blog => blog.id === selectedBlog.id);
     }
 
-    if (searchTerm) {
-      filtered = filtered.filter(blog =>
-        blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        blog.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
-
     setFilteredBlogs(filtered);
   };
 
@@ -58,18 +51,25 @@ const BlogDashboard = () => {
   const handleBlogSelect = (blog) => {
     setSelectedBlog(blog);
     setSelectedTags(blog.tags);
+    filterBlogs();
   };
 
   const handleTagSelect = (tag) => {
     if (!selectedTags.includes(tag)) {
       setSelectedTags([...selectedTags, tag]);
     }
+    filterBlogs();
   };
 
   const clearFilters = () => {
     setSelectedTags([]);
     setSelectedBlog(null);
     setSearchTerm('');
+    setFilteredBlogs(data.blogs);
+  };
+
+  const handleTagClick = (tag) => {
+    handleTagSelect(tag);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -86,6 +86,7 @@ const BlogDashboard = () => {
         onBlogSelect={handleBlogSelect}
         onTagSelect={handleTagSelect}
         clearFilters={clearFilters}
+        searchTerm={searchTerm}
       />
       <BlogList
         filteredBlogs={filteredBlogs}
@@ -93,6 +94,7 @@ const BlogDashboard = () => {
         selectedTags={selectedTags}
         selectedBlog={selectedBlog}
         searchTerm={searchTerm}
+        onTagClick={handleTagClick}
       />
     </div>
   );

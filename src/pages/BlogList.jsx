@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from "@/components/ui/card";
-import { CalendarIcon, ArrowRightIcon } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
-const BlogList = ({ filteredBlogs, allBlogs, selectedTags, searchTerm }) => {
+const BlogList = ({ filteredBlogs, allBlogs, selectedTags, searchTerm, onTagClick }) => {
   const exactMatches = filteredBlogs.filter(blog => 
     selectedTags.every(tag => blog.tags.includes(tag))
   );
@@ -21,44 +21,50 @@ const BlogList = ({ filteredBlogs, allBlogs, selectedTags, searchTerm }) => {
     return (
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-4">{title}</h2>
-        <div className="space-y-6">
+        <div className="flex flex-wrap gap-4">
           {blogs.map(blog => (
-            <Link to={`/${blog.slug}`} key={blog.id}>
-              <Card className="hover:shadow-md transition-shadow duration-300">
-                <CardContent className="p-0">
-                  <div className="flex">
-                    <div className="w-1/4 relative">
-                      <img src={blog.image} alt={blog.title} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="w-3/4 p-4">
-                      <h2 className="text-xl font-semibold mb-2">{blog.title}</h2>
-                      <p className="text-sm text-gray-600 mb-2">{blog.author}</p>
-                      <div className="flex items-center text-sm text-gray-500 mb-2">
-                        <CalendarIcon className="w-4 h-4 mr-1" />
-                        <span>{new Date(blog.date).toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        {blog.tags.map(tag => (
-                          <Button
-                            key={tag}
-                            variant="outline"
-                            size="sm"
-                          >
-                            {tag}
-                          </Button>
-                        ))}
-                      </div>
-                      <ArrowRightIcon className="w-4 h-4 ml-auto" />
-                    </div>
+            <Card key={blog.id} className="w-64 hover:shadow-md transition-shadow duration-300">
+              <CardContent className="p-4">
+                <Link to={`/${blog.slug}`} className="block">
+                  <img src={blog.image} alt={blog.title} className="w-full h-32 object-cover mb-2 rounded" />
+                  <h2 className="text-lg font-semibold mb-1 line-clamp-2">{blog.title}</h2>
+                  <p className="text-sm text-gray-600 mb-1">{blog.author}</p>
+                  <div className="flex items-center text-sm text-gray-500 mb-2">
+                    <CalendarIcon className="w-4 h-4 mr-1" />
+                    <span>{new Date(blog.date).toLocaleDateString()}</span>
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
+                </Link>
+                <div className="flex flex-wrap gap-1 mt-2" onClick={(e) => e.preventDefault()}>
+                  {blog.tags.map(tag => (
+                    <Button
+                      key={tag}
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onTagClick(tag);
+                      }}
+                    >
+                      {tag}
+                    </Button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
     );
   };
+
+  if (filteredBlogs.length === 0 && (searchTerm || selectedTags.length > 0)) {
+    return (
+      <p className="text-gray-600 text-center text-lg my-8">
+        No blogs found matching your criteria. Try adjusting your search or filters.
+      </p>
+    );
+  }
 
   if (filteredBlogs.length === 0 && !searchTerm && selectedTags.length === 0) {
     return renderBlogSection(allBlogs, "All Blogs:");
@@ -79,11 +85,6 @@ const BlogList = ({ filteredBlogs, allBlogs, selectedTags, searchTerm }) => {
         </>
       ) : (
         renderBlogSection(allBlogs, "All Blogs:")
-      )}
-      {filteredBlogs.length === 0 && (searchTerm || selectedTags.length > 0) && (
-        <p className="text-gray-600">
-          No blogs found matching your criteria. Try adjusting your search or filters.
-        </p>
       )}
     </div>
   );
