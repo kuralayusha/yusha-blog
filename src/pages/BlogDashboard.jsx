@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from 'react-router-dom';
@@ -24,6 +24,8 @@ const BlogDashboard = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     if (data && data.blogs) {
@@ -75,10 +77,19 @@ const BlogDashboard = () => {
     }
     setTagInput('');
     setSuggestions([]);
+    setShowSuggestions(false);
   };
 
   const removeTag = (tag) => {
     setSelectedTags(selectedTags.filter(t => t !== tag));
+  };
+
+  const handleInputFocus = () => {
+    setShowSuggestions(true);
+  };
+
+  const handleCloseSuggestions = () => {
+    setShowSuggestions(false);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -92,20 +103,35 @@ const BlogDashboard = () => {
           placeholder="Enter tags (e.g., #react #javascript)"
           value={tagInput}
           onChange={handleTagInput}
+          onFocus={handleInputFocus}
+          ref={inputRef}
           className="mb-2"
         />
-        {suggestions.length > 0 && (
-          <div className="absolute z-10 bg-white border border-gray-300 w-full mt-1">
-            {suggestions.map(tag => (
-              <div
-                key={tag}
-                className="p-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleTagSelection(tag)}
-              >
-                {tag}
+        {showSuggestions && (
+          <>
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-50 z-10"
+              onClick={handleCloseSuggestions}
+            ></div>
+            <div className="absolute z-20 bg-white border border-gray-300 w-full mt-1 rounded-md shadow-lg">
+              <div className="flex justify-between items-center p-2 border-b">
+                <span className="font-semibold">Suggestions</span>
+                <XCircleIcon 
+                  className="h-5 w-5 cursor-pointer text-gray-500 hover:text-gray-700"
+                  onClick={handleCloseSuggestions}
+                />
               </div>
-            ))}
-          </div>
+              {suggestions.map(tag => (
+                <div
+                  key={tag}
+                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                  onClick={() => handleTagSelection(tag)}
+                >
+                  {tag}
+                </div>
+              ))}
+            </div>
+          </>
         )}
         <div className="flex flex-wrap gap-2 mb-2">
           {selectedTags.map(tag => (
