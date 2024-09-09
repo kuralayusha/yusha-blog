@@ -25,9 +25,9 @@ const DynamicBlogPage = () => {
   const blog = blogs?.find(blog => blog.slug === blogName);
 
   useEffect(() => {
-    if (blog) {
+    if (blog && Array.isArray(blog.content)) {
       const toc = blog.content
-        .filter(item => item.type === 'heading')
+        .filter(item => item.type === 'heading' && item.text)
         .map(heading => ({
           id: `heading-${heading.text.toLowerCase().replace(/\s+/g, '-')}`,
           text: heading.text,
@@ -46,14 +46,19 @@ const DynamicBlogPage = () => {
   const nextBlog = blogs[currentIndex + 1];
 
   const renderContent = (content) => {
+    if (!Array.isArray(content)) {
+      return <div>No content available</div>;
+    }
+
     return content.map((item, index) => {
       switch (item.type) {
         case 'heading':
-          const HeadingTag = `h${item.level}`;
+          if (!item.text) return null;
+          const HeadingTag = `h${item.level || 1}`;
           const id = `heading-${item.text.toLowerCase().replace(/\s+/g, '-')}`;
           return <HeadingTag key={index} id={id}>{item.text}</HeadingTag>;
         case 'paragraph':
-          return <p key={index}>{item.text}</p>;
+          return <p key={index}>{item.text || ''}</p>;
         case 'image':
           return (
             <Dialog key={index}>
@@ -68,7 +73,7 @@ const DynamicBlogPage = () => {
         case 'code':
           return (
             <SyntaxHighlighter key={index} language={item.language} style={tomorrow}>
-              {item.code}
+              {item.code || ''}
             </SyntaxHighlighter>
           );
         default:
