@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { ChevronLeft, ChevronRight, CalendarIcon } from 'lucide-react';
+import { ChevronLeft, CalendarIcon } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 
 const fetchBlogs = async () => {
@@ -32,69 +32,16 @@ const BlogContent = ({ blog, tableOfContents }) => (
   </div>
 );
 
-const SimilarBlogs = ({ similarBlogs }) => {
-  const sliderRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeftValue, setScrollLeftValue] = useState(0);
-
-  const handleDragStart = (e) => {
-    setIsDragging(true);
-    setStartX(e.pageX || e.touches[0].pageX - sliderRef.current.offsetLeft);
-    setScrollLeftValue(sliderRef.current.scrollLeft);
-  };
-
-  const handleDragEnd = () => {
-    setIsDragging(false);
-  };
-
-  const handleDragMove = (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = (e.pageX || e.touches[0].pageX) - sliderRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    sliderRef.current.scrollLeft = scrollLeftValue - walk;
-  };
-
-  const scrollSlider = (direction) => {
-    sliderRef.current.scrollBy({ left: direction * 200, behavior: 'smooth' });
-  };
-
-  return (
-    <div className="mt-8">
-      <h2 className="text-xl font-bold mb-4">Similar Blogs</h2>
-      <div className="relative">
-        <div
-          ref={sliderRef}
-          className="flex overflow-x-auto space-x-4 pb-4 cursor-grab active:cursor-grabbing"
-          onMouseDown={handleDragStart}
-          onMouseLeave={handleDragEnd}
-          onMouseUp={handleDragEnd}
-          onMouseMove={handleDragMove}
-          onTouchStart={handleDragStart}
-          onTouchMove={handleDragMove}
-          onTouchEnd={handleDragEnd}
-        >
-          {similarBlogs.map((blog) => (
-            <BlogCard key={blog.id} blog={blog} />
-          ))}
-        </div>
-        <Button
-          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white text-black rounded-full p-2 shadow-md hidden lg:block"
-          onClick={() => scrollSlider(-1)}
-        >
-          <ChevronLeft className="h-6 w-6" />
-        </Button>
-        <Button
-          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white text-black rounded-full p-2 shadow-md hidden lg:block"
-          onClick={() => scrollSlider(1)}
-        >
-          <ChevronRight className="h-6 w-6" />
-        </Button>
-      </div>
+const SimilarBlogs = ({ similarBlogs }) => (
+  <div className="mt-8">
+    <h2 className="text-xl font-bold mb-4">Similar Blogs</h2>
+    <div className="flex flex-wrap justify-center gap-4">
+      {similarBlogs.map((blog) => (
+        <BlogCard key={blog.id} blog={blog} />
+      ))}
     </div>
-  );
-};
+  </div>
+);
 
 const BlogCard = ({ blog }) => (
   <Card className="w-64 flex-shrink-0 hover:shadow-md transition-shadow duration-300">
