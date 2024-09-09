@@ -17,12 +17,12 @@ const fetchBlogs = async () => {
 const DynamicBlogPage = () => {
   const { blogName } = useParams();
   const [tableOfContents, setTableOfContents] = useState([]);
-  const { data: blogs, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['blogs'],
     queryFn: fetchBlogs,
   });
 
-  const blog = blogs?.find(blog => blog.slug === blogName);
+  const blog = data?.blogs ? data.blogs.find(blog => blog.slug === blogName) : null;
 
   useEffect(() => {
     if (blog && blog.content && Array.isArray(blog.content.content)) {
@@ -41,9 +41,9 @@ const DynamicBlogPage = () => {
   if (error) return <div>Error: {error.message}</div>;
   if (!blog) return <div>Blog not found</div>;
 
-  const currentIndex = blogs.findIndex(b => b.slug === blogName);
-  const prevBlog = blogs[currentIndex - 1];
-  const nextBlog = blogs[currentIndex + 1];
+  const currentIndex = data.blogs.findIndex(b => b.slug === blogName);
+  const prevBlog = currentIndex > 0 ? data.blogs[currentIndex - 1] : null;
+  const nextBlog = currentIndex < data.blogs.length - 1 ? data.blogs[currentIndex + 1] : null;
 
   const renderContent = (content) => {
     if (!content || !Array.isArray(content.content)) {
@@ -87,7 +87,7 @@ const DynamicBlogPage = () => {
       <div className="w-1/4 p-4 fixed h-screen overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">All Blogs</h2>
         <ul>
-          {blogs.map((blog) => (
+          {data.blogs.map((blog) => (
             <li key={blog.id} className="mb-2">
               <Link to={`/${blog.slug}`} className="text-blue-500 hover:underline">
                 {blog.title}
