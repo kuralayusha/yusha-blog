@@ -4,7 +4,8 @@ import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Color from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
-import CodeBlock from '@tiptap/extension-code-block';
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import { lowlight } from 'lowlight/lib/core';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const MenuBar = ({ editor }) => {
   const [imageUrl, setImageUrl] = useState('');
+  const [codeLanguage, setCodeLanguage] = useState('javascript');
 
   if (!editor) {
     return null;
@@ -22,6 +24,10 @@ const MenuBar = ({ editor }) => {
       editor.chain().focus().setImage({ src: imageUrl }).run();
       setImageUrl('');
     }
+  };
+
+  const addCodeBlock = () => {
+    editor.chain().focus().toggleCodeBlock({ language: codeLanguage }).run();
   };
 
   return (
@@ -39,7 +45,7 @@ const MenuBar = ({ editor }) => {
       </Select>
       <Button onClick={() => editor.chain().focus().toggleBold().run()}>Bold</Button>
       <Button onClick={() => editor.chain().focus().toggleItalic().run()}>Italic</Button>
-      <Button onClick={() => editor.chain().focus().toggleCodeBlock().run()}>Code Block</Button>
+      <Button onClick={() => editor.chain().focus().toggleCode().run()}>Inline Code</Button>
       <Input
         type="color"
         onInput={(event) => editor.chain().focus().setColor(event.target.value).run()}
@@ -52,6 +58,18 @@ const MenuBar = ({ editor }) => {
         onChange={(e) => setImageUrl(e.target.value)}
       />
       <Button onClick={addImage}>Add Image</Button>
+      <Select value={codeLanguage} onValueChange={setCodeLanguage}>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Select language" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="javascript">JavaScript</SelectItem>
+          <SelectItem value="python">Python</SelectItem>
+          <SelectItem value="html">HTML</SelectItem>
+          <SelectItem value="css">CSS</SelectItem>
+        </SelectContent>
+      </Select>
+      <Button onClick={addCodeBlock}>Add Code Block</Button>
     </div>
   );
 };
@@ -61,11 +79,15 @@ const EditorPage = () => {
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        codeBlock: false,
+      }),
       Image,
       Color,
       TextStyle,
-      CodeBlock,
+      CodeBlockLowlight.configure({
+        lowlight,
+      }),
     ],
     content: '<p>Start writing your blog here...</p>',
   });
