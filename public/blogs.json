@@ -1,5 +1,5 @@
 {
-  "tags": ["#react", "#css", "#html", "#javascript", "#typescript", "#angular", "#vue", "#nodejs", "#express", "#mongodb"],
+  "tags": ["#react", "#css", "#html", "#javascript", "#typescript", "#angular", "#vue", "#nodejs", "#express", "#mongodb", "#python", "#django", "#flask", "#ai", "#machinelearning"],
   "blogs": [
     {
       "id": 1,
@@ -112,28 +112,231 @@
           {
             "type": "heading",
             "attrs": { "level": 1 },
-            "content": [
-              {
-                "type": "text",
-                "marks": [{ "type": "textStyle", "attrs": { "color": "#c62424" } }],
-                "text": "merhaba arkadaşlar ben volkan"
-              }
-            ]
+            "content": [{ "type": "text", "text": "merhaba arkadaşlar ben volkan" }]
           },
           {
             "type": "paragraph",
-            "content": [
-              {
-                "type": "text",
-                "marks": [{ "type": "textStyle", "attrs": { "color": "#000000" } }],
-                "text": "bugün sizlere cmd den olduğunuz konumun dosya listesini nasıl görebileceğinizin kodunu gösterecem"
-              }
-            ]
+            "content": [{ "type": "text", "text": "bugün sizlere cmd den olduğunuz konumun dosya listesini nasıl görebileceğinizin kodunu gösterecem" }]
           },
           {
             "type": "codeBlock",
             "attrs": { "language": "powershell" },
             "content": [{ "type": "text", "text": "dir" }]
+          }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "slug": "python-for-data-science",
+      "title": "Python for Data Science: Getting Started",
+      "author": "Emily Chen",
+      "date": "2023-07-10",
+      "image": "https://picsum.photos/seed/python/800/400",
+      "tags": ["#python", "#datascience"],
+      "content": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": { "level": 1 },
+            "content": [{ "type": "text", "text": "Python for Data Science: Getting Started" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "Python has become the go-to language for data science. In this blog post, we'll explore the basics of using Python for data analysis and visualization." }]
+          }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "slug": "nodejs-express-api",
+      "title": "Building RESTful APIs with Node.js and Express",
+      "author": "Michael Brown",
+      "date": "2023-08-05",
+      "image": "https://picsum.photos/seed/nodejs/800/400",
+      "tags": ["#nodejs", "#express", "#api"],
+      "content": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": { "level": 1 },
+            "content": [{ "type": "text", "text": "Building RESTful APIs with Node.js and Express" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "Learn how to create robust and scalable RESTful APIs using Node.js and the Express framework. We'll cover routing, middleware, and best practices." }]
+          }
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "slug": "vue-vs-react",
+      "title": "Vue.js vs React: A Comprehensive Comparison",
+      "author": "Sarah Lee",
+      "date": "2023-09-12",
+      "image": "https://picsum.photos/seed/vuereact/800/400",
+      "tags": ["#vue", "#react", "#javascript"],
+      "content": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": { "level": 1 },
+            "content": [{ "type": "text", "text": "Vue.js vs React: A Comprehensive Comparison" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "In this article, we'll compare two popular frontend frameworks: Vue.js and React. We'll look at their syntax, performance, and ecosystem to help you choose the right tool for your next project." }]
+          }
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "slug": "mongodb-aggregation",
+      "title": "Advanced MongoDB Aggregation Pipeline Techniques",
+      "author": "David Wilson",
+      "date": "2023-10-20",
+      "image": "https://picsum.photos/seed/mongodb/800/400",
+      "tags": ["#mongodb", "#database"],
+      "content": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": { "level": 1 },
+            "content": [{ "type": "text", "text": "Advanced MongoDB Aggregation Pipeline Techniques" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "Dive deep into MongoDB's aggregation pipeline. We'll explore complex data transformations, optimizations, and how to leverage the power of MongoDB for data analysis." }]
+          }
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "slug": "machine-learning-basics",
+      "title": "Machine Learning 101: A Beginner's Guide",
+      "author": "Sophia Rodriguez",
+      "date": "2023-11-08",
+      "image": "https://picsum.photos/seed/machinelearning/800/400",
+      "tags": ["#machinelearning", "#ai", "#python"],
+      "content": {
+        "type": "doc",
+        "content": [
+          {
+            "type": "heading",
+            "attrs": { "level": 1 },
+            "content": [{ "type": "text", "text": "Machine Learning 101: A Beginner's Guide" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "Embark on your machine learning journey with this comprehensive guide. We'll cover the fundamental concepts, algorithms, and tools used in modern machine learning." }]
+          },
+          {
+            "type": "heading",
+            "attrs": { "level": 2 },
+            "content": [{ "type": "text", "text": "What is Machine Learning?" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "Machine Learning is a subset of artificial intelligence that focuses on the development of algorithms and statistical models that enable computer systems to improve their performance on a specific task through experience." }]
+          },
+          {
+            "type": "heading",
+            "attrs": { "level": 2 },
+            "content": [{ "type": "text", "text": "Types of Machine Learning" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "There are three main types of machine learning:" }]
+          },
+          {
+            "type": "orderedList",
+            "content": [
+              {
+                "type": "listItem",
+                "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Supervised Learning" }] }]
+              },
+              {
+                "type": "listItem",
+                "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Unsupervised Learning" }] }]
+              },
+              {
+                "type": "listItem",
+                "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Reinforcement Learning" }] }]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": { "level": 2 },
+            "content": [{ "type": "text", "text": "Getting Started with Python for Machine Learning" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "Python is the most popular language for machine learning. Here's a simple example of how to use scikit-learn to train a basic classifier:" }]
+          },
+          {
+            "type": "codeBlock",
+            "attrs": { "language": "python" },
+            "content": [{ "type": "text", "text": "from sklearn import datasets\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.neighbors import KNeighborsClassifier\nfrom sklearn.metrics import accuracy_score\n\n# Load the iris dataset\niris = datasets.load_iris()\nX = iris.data\ny = iris.target\n\n# Split the data into training and testing sets\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)\n\n# Create and train the model\nknn = KNeighborsClassifier(n_neighbors=3)\nknn.fit(X_train, y_train)\n\n# Make predictions and calculate accuracy\ny_pred = knn.predict(X_test)\naccuracy = accuracy_score(y_test, y_pred)\nprint(f'Model accuracy: {accuracy:.2f}')" }]
+          },
+          {
+            "type": "heading",
+            "attrs": { "level": 2 },
+            "content": [{ "type": "text", "text": "Key Machine Learning Algorithms" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "Some popular machine learning algorithms include:" }]
+          },
+          {
+            "type": "bulletList",
+            "content": [
+              {
+                "type": "listItem",
+                "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Linear Regression" }] }]
+              },
+              {
+                "type": "listItem",
+                "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Logistic Regression" }] }]
+              },
+              {
+                "type": "listItem",
+                "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Decision Trees" }] }]
+              },
+              {
+                "type": "listItem",
+                "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Random Forests" }] }]
+              },
+              {
+                "type": "listItem",
+                "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Support Vector Machines (SVM)" }] }]
+              },
+              {
+                "type": "listItem",
+                "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "K-Nearest Neighbors (KNN)" }] }]
+              },
+              {
+                "type": "listItem",
+                "content": [{ "type": "paragraph", "content": [{ "type": "text", "text": "Neural Networks" }] }]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "attrs": { "level": 2 },
+            "content": [{ "type": "text", "text": "Conclusion" }]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "Machine learning is a vast and exciting field with endless possibilities. As you continue your journey, remember to practice regularly, stay curious, and keep up with the latest developments in the field. Happy learning!" }]
           }
         ]
       }
