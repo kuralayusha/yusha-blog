@@ -3,29 +3,25 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { XCircleIcon } from 'lucide-react';
 
-const TagInput = ({ allTags, allBlogs, selectedTags, setSelectedTags, onInputChange, onBlogSelect }) => {
+const TagInput = ({ allTags, allBlogs, selectedTags, setSelectedTags, onInputChange, onBlogSelect, onTagSelect }) => {
   const [tagInput, setTagInput] = useState('');
-  const [tagSuggestions, setTagSuggestions] = useState([]);
-  const [blogSuggestions, setBlogSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState({ tags: [], blogs: [] });
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
     if (tagInput.trim() !== '') {
-      if (tagInput.startsWith('#')) {
-        const matchedTags = allTags.filter(tag => 
-          tag.toLowerCase().includes(tagInput.toLowerCase().replace('#', '')) && !selectedTags.includes(tag)
-        );
-        setTagSuggestions(matchedTags);
-        setBlogSuggestions(allBlogs);
-      } else {
-        setBlogSuggestions(allBlogs);
-        setTagSuggestions([]);
-      }
+      const lowercaseInput = tagInput.toLowerCase();
+      const matchedTags = allTags.filter(tag => 
+        tag.toLowerCase().includes(lowercaseInput) && !selectedTags.includes(tag)
+      );
+      const matchedBlogs = allBlogs.filter(blog => 
+        blog.title.toLowerCase().includes(lowercaseInput)
+      );
+      setSuggestions({ tags: matchedTags, blogs: matchedBlogs });
       setShowSuggestions(true);
     } else {
-      setTagSuggestions([]);
-      setBlogSuggestions([]);
+      setSuggestions({ tags: [], blogs: [] });
       setShowSuggestions(false);
     }
   }, [tagInput, allTags, allBlogs, selectedTags]);
@@ -36,6 +32,7 @@ const TagInput = ({ allTags, allBlogs, selectedTags, setSelectedTags, onInputCha
     }
     setTagInput('');
     setShowSuggestions(false);
+    onTagSelect(tag);
   };
 
   const handleBlogSelection = (blog) => {
@@ -62,14 +59,14 @@ const TagInput = ({ allTags, allBlogs, selectedTags, setSelectedTags, onInputCha
     <div className="mb-6 relative">
       <Input
         type="text"
-        placeholder="Enter tags (e.g., #react) or blog title"
+        placeholder="Enter tags or blog title"
         value={tagInput}
         onChange={handleInputChange}
         onFocus={() => setShowSuggestions(true)}
         ref={inputRef}
         className="mb-2 z-20 relative"
       />
-      {showSuggestions && (
+      {showSuggestions && tagInput.trim() !== '' && (
         <>
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 z-10"
@@ -83,10 +80,10 @@ const TagInput = ({ allTags, allBlogs, selectedTags, setSelectedTags, onInputCha
                 onClick={handleCloseSuggestions}
               />
             </div>
-            {tagSuggestions.length > 0 && (
+            {suggestions.tags.length > 0 && (
               <div>
                 <h3 className="font-semibold p-2 bg-gray-100">Tags</h3>
-                {tagSuggestions.map(tag => (
+                {suggestions.tags.map(tag => (
                   <div
                     key={tag}
                     className="p-2 hover:bg-gray-100 cursor-pointer"
@@ -97,10 +94,10 @@ const TagInput = ({ allTags, allBlogs, selectedTags, setSelectedTags, onInputCha
                 ))}
               </div>
             )}
-            {blogSuggestions.length > 0 && (
+            {suggestions.blogs.length > 0 && (
               <div>
                 <h3 className="font-semibold p-2 bg-gray-100">Blogs</h3>
-                {blogSuggestions.map(blog => (
+                {suggestions.blogs.map(blog => (
                   <div
                     key={blog.id}
                     className="p-2 hover:bg-gray-100 cursor-pointer"
@@ -111,7 +108,7 @@ const TagInput = ({ allTags, allBlogs, selectedTags, setSelectedTags, onInputCha
                 ))}
               </div>
             )}
-            {tagSuggestions.length === 0 && blogSuggestions.length === 0 && (
+            {suggestions.tags.length === 0 && suggestions.blogs.length === 0 && (
               <div className="p-2 text-gray-500">No suggestions found</div>
             )}
           </div>
