@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
@@ -35,16 +35,90 @@ const BlogContent = ({ blog, tableOfContents }) => (
   </div>
 );
 
-const SimilarBlogs = ({ similarBlogs }) => (
-  <div className="mt-8">
-    <h2 className="text-xl font-bold mb-4">Similar Blogs</h2>
-    <div className="flex overflow-x-auto space-x-4 pb-4">
-      {similarBlogs.map((blog) => (
-        <BlogCard key={blog.id} blog={blog} />
-      ))}
+const SimilarBlogs = ({ similarBlogs }) => {
+  const sliderRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - sliderRef.current.offsetLeft);
+    setScrollLeft(sliderRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    sliderRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleTouchStart = (e) => {
+    setIsDragging(true);
+    setStartX(e.touches[0].pageX - sliderRef.current.offsetLeft);
+    setScrollLeft(sliderRef.current.scrollLeft);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging) return;
+    const x = e.touches[0].pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    sliderRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const scrollLeft = () => {
+    sliderRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+  };
+
+  const scrollRight = () => {
+    sliderRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="mt-8">
+      <h2 className="text-xl font-bold mb-4">Similar Blogs</h2>
+      <div className="relative">
+        <div
+          ref={sliderRef}
+          className="flex overflow-x-auto space-x-4 pb-4 cursor-grab active:cursor-grabbing"
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleMouseUp}
+        >
+          {similarBlogs.map((blog) => (
+            <BlogCard key={blog.id} blog={blog} />
+          ))}
+        </div>
+        <Button
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white text-black rounded-full p-2 shadow-md hidden lg:block"
+          onClick={scrollLeft}
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </Button>
+        <Button
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white text-black rounded-full p-2 shadow-md hidden lg:block"
+          onClick={scrollRight}
+        >
+          <ChevronRight className="h-6 w-6" />
+        </Button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const BlogCard = ({ blog }) => (
   <Card className="w-64 flex-shrink-0 hover:shadow-md transition-shadow duration-300">
