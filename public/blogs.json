@@ -165,5 +165,62 @@
         "text": "This introduction should give you a good starting point for exploring TypeScript further!"
       }
     ]
+  },
+  {
+    "id": 4,
+    "slug": "cmd-dosya-listesi",
+    "title": "CMD'de Dosya Listesi Görüntüleme",
+    "author": "Volkan",
+    "date": "2023-06-15",
+    "image": "https://picsum.photos/seed/cmd/800/400",
+    "content": [
+      {
+        "type": "heading",
+        "level": 1,
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "textStyle",
+                "attrs": {
+                  "color": "#c62424"
+                }
+              }
+            ],
+            "text": "merhaba arkadaşlar ben volkan"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "textStyle",
+                "attrs": {
+                  "color": "#000000"
+                }
+              }
+            ],
+            "text": "bugün sizlere cmd den olduğunuz konumun dosya listesini nasıl görebileceğinizin kodunu gösterecem"
+          }
+        ]
+      },
+      {
+        "type": "codeBlock",
+        "attrs": {
+          "language": "powershell"
+        },
+        "content": [
+          {
+            "type": "text",
+            "text": "dir"
+          }
+        ]
+      }
+    ]
   }
 ]
