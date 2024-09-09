@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CalendarIcon } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
-import { CalendarIcon } from 'lucide-react';
 
 const fetchBlogs = async () => {
   const response = await fetch('/blogs.json');
@@ -19,7 +18,6 @@ const BlogContent = ({ blog, tableOfContents }) => (
   <div className="lg:w-3/4">
     <h1 className="text-3xl font-bold mb-4">{blog.title}</h1>
     <p className="text-gray-600 mb-4">By {blog.author} | {new Date(blog.date).toLocaleDateString()}</p>
-
     <div className="lg:hidden mb-6">
       <h2 className="text-xl font-bold mb-2">Table of Contents</h2>
       <ul>
@@ -30,7 +28,6 @@ const BlogContent = ({ blog, tableOfContents }) => (
         ))}
       </ul>
     </div>
-
     {renderContent(blog.content)}
   </div>
 );
@@ -39,49 +36,28 @@ const SimilarBlogs = ({ similarBlogs }) => {
   const sliderRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const [scrollLeftValue, setScrollLeftValue] = useState(0);
 
-  const handleMouseDown = (e) => {
+  const handleDragStart = (e) => {
     setIsDragging(true);
-    setStartX(e.pageX - sliderRef.current.offsetLeft);
-    setScrollLeft(sliderRef.current.scrollLeft);
+    setStartX(e.pageX || e.touches[0].pageX - sliderRef.current.offsetLeft);
+    setScrollLeftValue(sliderRef.current.scrollLeft);
   };
 
-  const handleMouseLeave = () => {
+  const handleDragEnd = () => {
     setIsDragging(false);
   };
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseMove = (e) => {
+  const handleDragMove = (e) => {
     if (!isDragging) return;
     e.preventDefault();
-    const x = e.pageX - sliderRef.current.offsetLeft;
+    const x = (e.pageX || e.touches[0].pageX) - sliderRef.current.offsetLeft;
     const walk = (x - startX) * 2;
-    sliderRef.current.scrollLeft = scrollLeft - walk;
+    sliderRef.current.scrollLeft = scrollLeftValue - walk;
   };
 
-  const handleTouchStart = (e) => {
-    setIsDragging(true);
-    setStartX(e.touches[0].pageX - sliderRef.current.offsetLeft);
-    setScrollLeft(sliderRef.current.scrollLeft);
-  };
-
-  const handleTouchMove = (e) => {
-    if (!isDragging) return;
-    const x = e.touches[0].pageX - sliderRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    sliderRef.current.scrollLeft = scrollLeft - walk;
-  };
-
-  const scrollLeft = () => {
-    sliderRef.current.scrollBy({ left: -200, behavior: 'smooth' });
-  };
-
-  const scrollRight = () => {
-    sliderRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+  const scrollSlider = (direction) => {
+    sliderRef.current.scrollBy({ left: direction * 200, behavior: 'smooth' });
   };
 
   return (
@@ -91,13 +67,13 @@ const SimilarBlogs = ({ similarBlogs }) => {
         <div
           ref={sliderRef}
           className="flex overflow-x-auto space-x-4 pb-4 cursor-grab active:cursor-grabbing"
-          onMouseDown={handleMouseDown}
-          onMouseLeave={handleMouseLeave}
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleMouseUp}
+          onMouseDown={handleDragStart}
+          onMouseLeave={handleDragEnd}
+          onMouseUp={handleDragEnd}
+          onMouseMove={handleDragMove}
+          onTouchStart={handleDragStart}
+          onTouchMove={handleDragMove}
+          onTouchEnd={handleDragEnd}
         >
           {similarBlogs.map((blog) => (
             <BlogCard key={blog.id} blog={blog} />
@@ -105,13 +81,13 @@ const SimilarBlogs = ({ similarBlogs }) => {
         </div>
         <Button
           className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white text-black rounded-full p-2 shadow-md hidden lg:block"
-          onClick={scrollLeft}
+          onClick={() => scrollSlider(-1)}
         >
           <ChevronLeft className="h-6 w-6" />
         </Button>
         <Button
           className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white text-black rounded-full p-2 shadow-md hidden lg:block"
-          onClick={scrollRight}
+          onClick={() => scrollSlider(1)}
         >
           <ChevronRight className="h-6 w-6" />
         </Button>
@@ -134,18 +110,7 @@ const BlogCard = ({ blog }) => (
       </Link>
       <div className="flex flex-wrap gap-1 mt-2">
         {blog.tags.map(tag => (
-          <Button
-            key={tag}
-            variant="outline"
-            size="sm"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              // Add tag filtering logic here
-            }}
-          >
-            {tag}
-          </Button>
+          <Button key={tag} variant="outline" size="sm">{tag}</Button>
         ))}
       </div>
     </CardContent>
@@ -177,12 +142,11 @@ const renderContent = (content) => {
   return content.content.map((item, index) => {
     switch (item.type) {
       case 'heading':
-        if (!item.content || !item.content[0] || !item.content[0].text) return null;
         const HeadingTag = `h${item.attrs.level || 1}`;
-        const id = `heading-${item.content[0].text.toLowerCase().replace(/\s+/g, '-')}`;
-        return <HeadingTag key={index} id={id}>{item.content[0].text}</HeadingTag>;
+        const id = `heading-${item.content[0]?.text?.toLowerCase().replace(/\s+/g, '-')}`;
+        return <HeadingTag key={index} id={id}>{item.content[0]?.text}</HeadingTag>;
       case 'paragraph':
-        return <p key={index}>{item.content ? item.content.map(c => c.text).join('') : ''}</p>;
+        return <p key={index}>{item.content?.map(c => c.text).join('')}</p>;
       case 'image':
         return (
           <Dialog key={index}>
@@ -197,7 +161,7 @@ const renderContent = (content) => {
       case 'codeBlock':
         return (
           <SyntaxHighlighter key={index} language={item.attrs.language} style={tomorrow}>
-            {item.content ? item.content.map(c => c.text).join('') : ''}
+            {item.content?.map(c => c.text).join('')}
           </SyntaxHighlighter>
         );
       default:
@@ -215,30 +179,30 @@ const DynamicBlogPage = () => {
     queryFn: fetchBlogs,
   });
 
-  const blog = data?.blogs ? data.blogs.find(blog => blog.slug === blogName) : null;
+  const blog = data?.blogs?.find(blog => blog.slug === blogName);
 
   useEffect(() => {
-    if (blog && blog.content && Array.isArray(blog.content.content)) {
+    if (blog && blog.content?.content) {
       const toc = blog.content.content
-        .filter(item => item.type === 'heading' && item.content && item.content[0] && item.content[0].text)
+        .filter(item => item.type === 'heading' && item.content?.[0]?.text)
         .map(heading => ({
           id: `heading-${heading.content[0].text.toLowerCase().replace(/\s+/g, '-')}`,
           text: heading.content[0].text,
           level: heading.attrs.level,
         }));
       setTableOfContents(toc);
-    }
 
-    if (blog && data?.blogs) {
-      const otherBlogs = data.blogs.filter(b => b.id !== blog.id);
-      const similarBlogs = otherBlogs
-        .map(b => ({
-          ...b,
-          matchScore: b.tags.filter(tag => blog.tags.includes(tag)).length,
-        }))
-        .sort((a, b) => b.matchScore - a.matchScore)
-        .slice(0, 3);
-      setSimilarBlogs(similarBlogs);
+      if (data?.blogs) {
+        const otherBlogs = data.blogs.filter(b => b.id !== blog.id);
+        const similar = otherBlogs
+          .map(b => ({
+            ...b,
+            matchScore: b.tags.filter(tag => blog.tags.includes(tag)).length,
+          }))
+          .sort((a, b) => b.matchScore - a.matchScore)
+          .slice(0, 3);
+        setSimilarBlogs(similar);
+      }
     }
   }, [blog, data]);
 
@@ -253,12 +217,10 @@ const DynamicBlogPage = () => {
           <ChevronLeft className="mr-2 h-4 w-4" /> Return to Dashboard
         </Button>
       </Link>
-
       <div className="lg:flex lg:space-x-8">
-        <BlogContent blog={blog} tableOfContents={tableOfContents} />
         <AllBlogs allBlogs={data.blogs} currentBlogId={blog.id} />
+        <BlogContent blog={blog} tableOfContents={tableOfContents} />
       </div>
-
       <SimilarBlogs similarBlogs={similarBlogs} />
     </div>
   );
