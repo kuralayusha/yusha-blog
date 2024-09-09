@@ -5,15 +5,15 @@ import DynamicBlogPage from "./pages/DynamicBlogPage.jsx";
 import EditorPage from "./pages/EditorPage.jsx";
 
 export const navItems = [
-  {
-    title: "Home",
-    to: "/",
-    icon: <HomeIcon className="h-4 w-4" />,
-    page: <Index />,
-  },
+  // {
+  //   title: "Home",
+  //   to: "/",
+  //   icon: <HomeIcon className="h-4 w-4" />,
+  //   page: <Index />,
+  // },
   {
     title: "Blog Dashboard",
-    to: "/blog",
+    to: "/",
     icon: <BookOpenIcon className="h-4 w-4" />,
     page: <BlogDashboard />,
   },
