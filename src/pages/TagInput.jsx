@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { XCircleIcon } from 'lucide-react';
 
-const TagInput = ({ allTags, selectedTags, setSelectedTags }) => {
+const TagInput = ({ allTags, selectedTags, setSelectedTags, onInputChange }) => {
   const [tagInput, setTagInput] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -12,7 +12,7 @@ const TagInput = ({ allTags, selectedTags, setSelectedTags }) => {
   useEffect(() => {
     if (tagInput.trim() !== '') {
       const matchedTags = allTags.filter(tag => 
-        tag.toLowerCase().includes(tagInput.toLowerCase()) && !selectedTags.includes(tag)
+        tag.toLowerCase().includes(tagInput.toLowerCase().replace('#', '')) && !selectedTags.includes(tag)
       );
       setSuggestions(matchedTags);
       setShowSuggestions(true);
@@ -39,17 +39,24 @@ const TagInput = ({ allTags, selectedTags, setSelectedTags }) => {
     setShowSuggestions(false);
   };
 
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setTagInput(value);
+    onInputChange(value);
+  };
+
   return (
     <div className="mb-6 relative">
       <Input
         type="text"
-        placeholder="Enter tags (e.g., #react #javascript)"
+        placeholder="Enter tags (e.g., #react) or blog title"
         value={tagInput}
-        onChange={(e) => setTagInput(e.target.value)}
+        onChange={handleInputChange}
+        onFocus={() => setShowSuggestions(true)}
         ref={inputRef}
         className="mb-2 z-20 relative"
       />
-      {showSuggestions && (
+      {showSuggestions && tagInput.trim() !== '' && (
         <>
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 z-10"
@@ -63,15 +70,19 @@ const TagInput = ({ allTags, selectedTags, setSelectedTags }) => {
                 onClick={handleCloseSuggestions}
               />
             </div>
-            {suggestions.map(tag => (
-              <div
-                key={tag}
-                className="p-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleTagSelection(tag)}
-              >
-                {tag}
-              </div>
-            ))}
+            {suggestions.length > 0 ? (
+              suggestions.map(tag => (
+                <div
+                  key={tag}
+                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                  onClick={() => handleTagSelection(tag)}
+                >
+                  {tag}
+                </div>
+              ))
+            ) : (
+              <div className="p-2 text-gray-500">No matching tags found</div>
+            )}
           </div>
         </>
       )}

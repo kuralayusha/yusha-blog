@@ -1,10 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent } from "@/components/ui/card";
-import { Link } from 'react-router-dom';
-import { CalendarIcon, ArrowRightIcon, XCircleIcon } from 'lucide-react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import BlogList from './BlogList';
 import TagInput from './TagInput';
 
@@ -22,27 +17,41 @@ const BlogDashboard = () => {
 
   const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     if (data && data.blogs) {
       filterBlogs();
     }
-  }, [data, selectedTags]);
+  }, [data, selectedTags, searchTerm]);
 
   const filterBlogs = () => {
-    if (selectedTags.length === 0) {
-      setFilteredBlogs(data.blogs);
+    if (!data || !data.blogs) return;
+
+    let filtered = data.blogs;
+
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter(blog =>
+        selectedTags.some(tag => blog.tags.includes(tag))
+      );
+    }
+
+    if (searchTerm) {
+      const lowercaseSearchTerm = searchTerm.toLowerCase();
+      filtered = filtered.filter(blog =>
+        blog.title.toLowerCase().includes(lowercaseSearchTerm) ||
+        blog.tags.some(tag => tag.toLowerCase().includes(lowercaseSearchTerm))
+      );
+    }
+
+    setFilteredBlogs(filtered);
+  };
+
+  const handleInputChange = (value) => {
+    if (value.startsWith('#')) {
+      setSearchTerm('');
     } else {
-      const exactMatches = data.blogs.filter(blog =>
-        selectedTags.every(tag => blog.tags.includes(tag))
-      );
-      const partialMatches = data.blogs.filter(blog =>
-        !exactMatches.includes(blog) && selectedTags.some(tag => blog.tags.includes(tag))
-      );
-      const otherBlogs = data.blogs.filter(blog =>
-        !exactMatches.includes(blog) && !partialMatches.includes(blog)
-      );
-      setFilteredBlogs([...exactMatches, ...partialMatches, ...otherBlogs]);
+      setSearchTerm(value);
     }
   };
 
@@ -55,10 +64,12 @@ const BlogDashboard = () => {
         allTags={data.tags}
         selectedTags={selectedTags}
         setSelectedTags={setSelectedTags}
+        onInputChange={handleInputChange}
       />
       <BlogList
         filteredBlogs={filteredBlogs}
         selectedTags={selectedTags}
+        searchTerm={searchTerm}
       />
     </div>
   );
