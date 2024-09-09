@@ -23,6 +23,7 @@ const BlogDashboard = () => {
   const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
     if (data && data.blogs) {
@@ -30,20 +31,29 @@ const BlogDashboard = () => {
     }
   }, [data, selectedTags]);
 
+  useEffect(() => {
+    if (data && data.tags) {
+      const matchedTags = data.tags.filter(tag => 
+        tag.toLowerCase().includes(tagInput.toLowerCase()) && !selectedTags.includes(tag)
+      );
+      setSuggestions(matchedTags);
+    }
+  }, [tagInput, data, selectedTags]);
+
   const filterBlogs = () => {
     if (selectedTags.length === 0) {
       setFilteredBlogs(data.blogs);
     } else {
-      const filtered = data.blogs.filter(blog =>
+      const exactMatches = data.blogs.filter(blog =>
         selectedTags.every(tag => blog.tags.includes(tag))
       );
       const partialMatches = data.blogs.filter(blog =>
-        !filtered.includes(blog) && selectedTags.some(tag => blog.tags.includes(tag))
+        !exactMatches.includes(blog) && selectedTags.some(tag => blog.tags.includes(tag))
       );
       const otherBlogs = data.blogs.filter(blog =>
-        !filtered.includes(blog) && !partialMatches.includes(blog)
+        !exactMatches.includes(blog) && !partialMatches.includes(blog)
       );
-      setFilteredBlogs([...filtered, ...partialMatches, ...otherBlogs]);
+      setFilteredBlogs([...exactMatches, ...partialMatches, ...otherBlogs]);
     }
   };
 
@@ -57,13 +67,14 @@ const BlogDashboard = () => {
 
   const handleTagInput = (e) => {
     setTagInput(e.target.value);
-    if (e.target.value.endsWith(' ')) {
-      const newTag = e.target.value.trim();
-      if (newTag && !selectedTags.includes(newTag)) {
-        setSelectedTags([...selectedTags, newTag]);
-      }
-      setTagInput('');
+  };
+
+  const handleTagSelection = (tag) => {
+    if (!selectedTags.includes(tag)) {
+      setSelectedTags([...selectedTags, tag]);
     }
+    setTagInput('');
+    setSuggestions([]);
   };
 
   const removeTag = (tag) => {
@@ -75,7 +86,7 @@ const BlogDashboard = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="mb-6">
+      <div className="mb-6 relative">
         <Input
           type="text"
           placeholder="Enter tags (e.g., #react #javascript)"
@@ -83,6 +94,19 @@ const BlogDashboard = () => {
           onChange={handleTagInput}
           className="mb-2"
         />
+        {suggestions.length > 0 && (
+          <div className="absolute z-10 bg-white border border-gray-300 w-full mt-1">
+            {suggestions.map(tag => (
+              <div
+                key={tag}
+                className="p-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleTagSelection(tag)}
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
+        )}
         <div className="flex flex-wrap gap-2 mb-2">
           {selectedTags.map(tag => (
             <Button
