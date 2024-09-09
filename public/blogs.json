@@ -1,0 +1,169 @@
+[
+  {
+    "id": 1,
+    "slug": "getting-started-with-react",
+    "title": "Getting Started with React",
+    "author": "Jane Doe",
+    "date": "2023-03-15",
+    "image": "https://picsum.photos/seed/react/800/400",
+    "content": [
+      {
+        "type": "heading",
+        "level": 1,
+        "text": "Getting Started with React"
+      },
+      {
+        "type": "paragraph",
+        "text": "React is a popular JavaScript library for building user interfaces. In this blog post, we'll cover the basics of getting started with React."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Setting Up Your Development Environment"
+      },
+      {
+        "type": "paragraph",
+        "text": "Before we dive into React, let's set up our development environment. You'll need Node.js and npm installed on your machine."
+      },
+      {
+        "type": "code",
+        "language": "bash",
+        "code": "npx create-react-app my-react-app\ncd my-react-app\nnpm start"
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Understanding JSX"
+      },
+      {
+        "type": "paragraph",
+        "text": "JSX is a syntax extension for JavaScript that allows you to write HTML-like code in your JavaScript files. Here's a simple example:"
+      },
+      {
+        "type": "code",
+        "language": "jsx",
+        "code": "const element = <h1>Hello, world!</h1>;"
+      },
+      {
+        "type": "image",
+        "src": "https://picsum.photos/seed/jsx/800/400",
+        "alt": "JSX Example"
+      },
+      {
+        "type": "paragraph",
+        "text": "That's it for this quick introduction to React. Happy coding!"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "slug": "mastering-css-grid",
+    "title": "Mastering CSS Grid",
+    "author": "John Smith",
+    "date": "2023-04-02",
+    "image": "https://picsum.photos/seed/cssgrid/800/400",
+    "content": [
+      {
+        "type": "heading",
+        "level": 1,
+        "text": "Mastering CSS Grid"
+      },
+      {
+        "type": "paragraph",
+        "text": "CSS Grid is a powerful layout system that allows you to create complex web layouts with ease. In this post, we'll explore some advanced techniques for mastering CSS Grid."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Creating a Basic Grid"
+      },
+      {
+        "type": "paragraph",
+        "text": "Let's start by creating a basic grid layout:"
+      },
+      {
+        "type": "code",
+        "language": "css",
+        "code": ".container {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  grid-gap: 20px;\n}"
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Grid Areas"
+      },
+      {
+        "type": "paragraph",
+        "text": "Grid areas allow you to name sections of your grid and place items within them:"
+      },
+      {
+        "type": "code",
+        "language": "css",
+        "code": ".container {\n  display: grid;\n  grid-template-areas:\n    \"header header header\"\n    \"sidebar main main\"\n    \"footer footer footer\";\n}"
+      },
+      {
+        "type": "image",
+        "src": "https://picsum.photos/seed/gridarea/800/400",
+        "alt": "CSS Grid Areas Example"
+      },
+      {
+        "type": "paragraph",
+        "text": "With these techniques, you'll be well on your way to becoming a CSS Grid master!"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "slug": "introduction-to-typescript",
+    "title": "Introduction to TypeScript",
+    "author": "Alice Johnson",
+    "date": "2023-05-20",
+    "image": "https://picsum.photos/seed/typescript/800/400",
+    "content": [
+      {
+        "type": "heading",
+        "level": 1,
+        "text": "Introduction to TypeScript"
+      },
+      {
+        "type": "paragraph",
+        "text": "TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. In this blog post, we'll introduce you to the basics of TypeScript and its benefits."
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Why Use TypeScript?"
+      },
+      {
+        "type": "paragraph",
+        "text": "TypeScript offers several advantages over plain JavaScript, including:"
+      },
+      {
+        "type": "paragraph",
+        "text": "1. Static typing\n2. Enhanced IDE support\n3. Early error detection\n4. Improved code maintainability"
+      },
+      {
+        "type": "heading",
+        "level": 2,
+        "text": "Basic Types in TypeScript"
+      },
+      {
+        "type": "paragraph",
+        "text": "Let's look at some basic types in TypeScript:"
+      },
+      {
+        "type": "code",
+        "language": "typescript",
+        "code": "let isDone: boolean = false;\nlet decimal: number = 6;\nlet color: string = \"blue\";\nlet list: number[] = [1, 2, 3];\nlet tuple: [string, number] = [\"hello\", 10];"
+      },
+      {
+        "type": "image",
+        "src": "https://picsum.photos/seed/typescripttypes/800/400",
+        "alt": "TypeScript Types Example"
+      },
+      {
+        "type": "paragraph",
+        "text": "This introduction should give you a good starting point for exploring TypeScript further!"
+      }
+    ]
+  }
+]
