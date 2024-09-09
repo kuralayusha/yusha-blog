@@ -1,19 +1,78 @@
 import React, { useState } from 'react';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Image from '@tiptap/extension-image';
+import Color from '@tiptap/extension-color';
+import TextStyle from '@tiptap/extension-text-style';
+import CodeBlock from '@tiptap/extension-code-block';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const MenuBar = ({ editor }) => {
+  const [imageUrl, setImageUrl] = useState('');
+
+  if (!editor) {
+    return null;
+  }
+
+  const addImage = () => {
+    if (imageUrl) {
+      editor.chain().focus().setImage({ src: imageUrl }).run();
+      setImageUrl('');
+    }
+  };
+
+  return (
+    <div className="flex flex-wrap gap-2 mb-4">
+      <Select onValueChange={(value) => editor.chain().focus().toggleHeading({ level: parseInt(value) }).run()}>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Paragraph" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="0">Paragraph</SelectItem>
+          <SelectItem value="1">Heading 1</SelectItem>
+          <SelectItem value="2">Heading 2</SelectItem>
+          <SelectItem value="3">Heading 3</SelectItem>
+        </SelectContent>
+      </Select>
+      <Button onClick={() => editor.chain().focus().toggleBold().run()}>Bold</Button>
+      <Button onClick={() => editor.chain().focus().toggleItalic().run()}>Italic</Button>
+      <Button onClick={() => editor.chain().focus().toggleCodeBlock().run()}>Code Block</Button>
+      <Input
+        type="color"
+        onInput={(event) => editor.chain().focus().setColor(event.target.value).run()}
+        value={editor.getAttributes('textStyle').color}
+      />
+      <Input
+        type="text"
+        placeholder="Image URL"
+        value={imageUrl}
+        onChange={(e) => setImageUrl(e.target.value)}
+      />
+      <Button onClick={addImage}>Add Image</Button>
+    </div>
+  );
+};
 
 const EditorPage = () => {
-  const [editorContent, setEditorContent] = useState('');
   const [jsonContent, setJsonContent] = useState('');
 
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Image,
+      Color,
+      TextStyle,
+      CodeBlock,
+    ],
+    content: '<p>Start writing your blog here...</p>',
+  });
+
   const handleExportToJson = () => {
-    // Convert editor content to JSON format
     const jsonOutput = JSON.stringify({
-      content: editorContent.split('\n').map(line => ({
-        type: 'paragraph',
-        text: line
-      }))
+      content: editor.getJSON(),
     }, null, 2);
     setJsonContent(jsonOutput);
   };
@@ -22,7 +81,7 @@ const EditorPage = () => {
     try {
       const parsedContent = JSON.parse(jsonContent);
       if (parsedContent.content) {
-        setEditorContent(parsedContent.content.map(item => item.text).join('\n'));
+        editor.commands.setContent(parsedContent.content);
       }
     } catch (error) {
       console.error('Invalid JSON format', error);
@@ -38,20 +97,16 @@ const EditorPage = () => {
           <TabsTrigger value="json">JSON</TabsTrigger>
         </TabsList>
         <TabsContent value="editor">
-          <Textarea
-            value={editorContent}
-            onChange={(e) => setEditorContent(e.target.value)}
-            placeholder="Write your blog content here..."
-            className="min-h-[400px] mb-4"
-          />
+          <MenuBar editor={editor} />
+          <EditorContent editor={editor} className="border p-4 min-h-[400px] mb-4" />
           <Button onClick={handleExportToJson}>Export to JSON</Button>
         </TabsContent>
         <TabsContent value="json">
-          <Textarea
+          <textarea
             value={jsonContent}
             onChange={(e) => setJsonContent(e.target.value)}
             placeholder="Paste JSON content here..."
-            className="min-h-[400px] mb-4"
+            className="w-full h-[400px] p-2 border rounded mb-4"
           />
           <Button onClick={handleImportFromJson}>Import from JSON</Button>
         </TabsContent>
