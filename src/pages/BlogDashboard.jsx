@@ -39,8 +39,7 @@ const BlogDashboard = () => {
     if (searchTerm) {
       const lowercaseSearchTerm = searchTerm.toLowerCase();
       filtered = filtered.filter(blog =>
-        blog.title.toLowerCase().includes(lowercaseSearchTerm) ||
-        blog.tags.some(tag => tag.toLowerCase().includes(lowercaseSearchTerm))
+        blog.title.toLowerCase().includes(lowercaseSearchTerm)
       );
     }
 
@@ -48,11 +47,13 @@ const BlogDashboard = () => {
   };
 
   const handleInputChange = (value) => {
-    if (value.startsWith('#')) {
-      setSearchTerm('');
-    } else {
+    if (!value.startsWith('#')) {
       setSearchTerm(value);
     }
+  };
+
+  const handleBlogSelect = (blog) => {
+    setSearchTerm(blog.title);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -62,9 +63,11 @@ const BlogDashboard = () => {
     <div className="container mx-auto p-4">
       <TagInput
         allTags={data.tags}
+        allBlogs={data.blogs}
         selectedTags={selectedTags}
         setSelectedTags={setSelectedTags}
         onInputChange={handleInputChange}
+        onBlogSelect={handleBlogSelect}
       />
       <BlogList
         filteredBlogs={filteredBlogs}

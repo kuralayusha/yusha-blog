@@ -20,7 +20,9 @@ const BlogList = ({ filteredBlogs, selectedTags, searchTerm }) => {
       return (
         <div className="mb-6">
           <h2 className="text-xl font-semibold mb-4">{title}</h2>
-          <p className="text-gray-600">No blogs found matching {selectedTags.join(', ')}</p>
+          <p className="text-gray-600">
+            No blogs found matching {selectedTags.length > 0 ? selectedTags.join(', ') : searchTerm}
+          </p>
         </div>
       );
     }

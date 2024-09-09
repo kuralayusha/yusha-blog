@@ -3,31 +3,44 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { XCircleIcon } from 'lucide-react';
 
-const TagInput = ({ allTags, selectedTags, setSelectedTags, onInputChange }) => {
+const TagInput = ({ allTags, allBlogs, selectedTags, setSelectedTags, onInputChange, onBlogSelect }) => {
   const [tagInput, setTagInput] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
+  const [tagSuggestions, setTagSuggestions] = useState([]);
+  const [blogSuggestions, setBlogSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
     if (tagInput.trim() !== '') {
-      const matchedTags = allTags.filter(tag => 
-        tag.toLowerCase().includes(tagInput.toLowerCase().replace('#', '')) && !selectedTags.includes(tag)
-      );
-      setSuggestions(matchedTags);
+      if (tagInput.startsWith('#')) {
+        const matchedTags = allTags.filter(tag => 
+          tag.toLowerCase().includes(tagInput.toLowerCase().replace('#', '')) && !selectedTags.includes(tag)
+        );
+        setTagSuggestions(matchedTags);
+        setBlogSuggestions(allBlogs);
+      } else {
+        setBlogSuggestions(allBlogs);
+        setTagSuggestions([]);
+      }
       setShowSuggestions(true);
     } else {
-      setSuggestions([]);
+      setTagSuggestions([]);
+      setBlogSuggestions([]);
       setShowSuggestions(false);
     }
-  }, [tagInput, allTags, selectedTags]);
+  }, [tagInput, allTags, allBlogs, selectedTags]);
 
   const handleTagSelection = (tag) => {
     if (!selectedTags.includes(tag)) {
       setSelectedTags([...selectedTags, tag]);
     }
     setTagInput('');
-    setSuggestions([]);
+    setShowSuggestions(false);
+  };
+
+  const handleBlogSelection = (blog) => {
+    onBlogSelect(blog);
+    setTagInput('');
     setShowSuggestions(false);
   };
 
@@ -56,13 +69,13 @@ const TagInput = ({ allTags, selectedTags, setSelectedTags, onInputChange }) => 
         ref={inputRef}
         className="mb-2 z-20 relative"
       />
-      {showSuggestions && tagInput.trim() !== '' && (
+      {showSuggestions && (
         <>
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 z-10"
             onClick={handleCloseSuggestions}
           ></div>
-          <div className="absolute z-20 bg-white border border-gray-300 w-full mt-1 rounded-md shadow-lg">
+          <div className="absolute z-20 bg-white border border-gray-300 w-full mt-1 rounded-md shadow-lg max-h-80 overflow-y-auto">
             <div className="flex justify-between items-center p-2 border-b">
               <span className="font-semibold">Suggestions</span>
               <XCircleIcon 
@@ -70,18 +83,36 @@ const TagInput = ({ allTags, selectedTags, setSelectedTags, onInputChange }) => 
                 onClick={handleCloseSuggestions}
               />
             </div>
-            {suggestions.length > 0 ? (
-              suggestions.map(tag => (
-                <div
-                  key={tag}
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleTagSelection(tag)}
-                >
-                  {tag}
-                </div>
-              ))
-            ) : (
-              <div className="p-2 text-gray-500">No matching tags found</div>
+            {tagSuggestions.length > 0 && (
+              <div>
+                <h3 className="font-semibold p-2 bg-gray-100">Tags</h3>
+                {tagSuggestions.map(tag => (
+                  <div
+                    key={tag}
+                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleTagSelection(tag)}
+                  >
+                    {tag}
+                  </div>
+                ))}
+              </div>
+            )}
+            {blogSuggestions.length > 0 && (
+              <div>
+                <h3 className="font-semibold p-2 bg-gray-100">Blogs</h3>
+                {blogSuggestions.map(blog => (
+                  <div
+                    key={blog.id}
+                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleBlogSelection(blog)}
+                  >
+                    {blog.title}
+                  </div>
+                ))}
+              </div>
+            )}
+            {tagSuggestions.length === 0 && blogSuggestions.length === 0 && (
+              <div className="p-2 text-gray-500">No suggestions found</div>
             )}
           </div>
         </>
