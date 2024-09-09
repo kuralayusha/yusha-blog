@@ -5,11 +5,13 @@ import Image from '@tiptap/extension-image';
 import Color from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
-import { lowlight } from 'lowlight/lib/core';
+import { common, createLowlight } from 'lowlight';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const lowlight = createLowlight(common);
 
 const MenuBar = ({ editor }) => {
   const [imageUrl, setImageUrl] = useState('');
