@@ -84,6 +84,8 @@ const MenuBar = ({ editor }) => {
 };
 
 const EditorPage = () => {
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
   const [jsonContent, setJsonContent] = useState('');
 
   const editor = useEditor({
@@ -104,7 +106,13 @@ const EditorPage = () => {
 
   const handleExportToJson = () => {
     const jsonOutput = JSON.stringify({
-      content: editor.getJSON(),
+      title,
+      author,
+      date: new Date().toISOString().split('T')[0],
+      content: {
+        type: 'doc',
+        content: editor.getJSON().content,
+      },
     }, null, 2);
     setJsonContent(jsonOutput);
   };
@@ -113,6 +121,8 @@ const EditorPage = () => {
     try {
       const parsedContent = JSON.parse(jsonContent);
       if (parsedContent.content) {
+        setTitle(parsedContent.title || '');
+        setAuthor(parsedContent.author || '');
         editor.commands.setContent(parsedContent.content);
       }
     } catch (error) {
@@ -129,6 +139,20 @@ const EditorPage = () => {
           <TabsTrigger value="json">JSON</TabsTrigger>
         </TabsList>
         <TabsContent value="editor">
+          <Input
+            type="text"
+            placeholder="Blog Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="mb-4"
+          />
+          <Input
+            type="text"
+            placeholder="Author"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            className="mb-4"
+          />
           <MenuBar editor={editor} />
           <EditorContent editor={editor} className="border p-4 min-h-[400px] mb-4" />
           <Button onClick={handleExportToJson}>Export to JSON</Button>

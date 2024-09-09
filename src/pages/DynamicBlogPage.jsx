@@ -25,13 +25,13 @@ const DynamicBlogPage = () => {
   const blog = blogs?.find(blog => blog.slug === blogName);
 
   useEffect(() => {
-    if (blog && Array.isArray(blog.content)) {
-      const toc = blog.content
-        .filter(item => item.type === 'heading' && item.text)
+    if (blog && blog.content && Array.isArray(blog.content.content)) {
+      const toc = blog.content.content
+        .filter(item => item.type === 'heading' && item.content && item.content[0] && item.content[0].text)
         .map(heading => ({
-          id: `heading-${heading.text.toLowerCase().replace(/\s+/g, '-')}`,
-          text: heading.text,
-          level: heading.level,
+          id: `heading-${heading.content[0].text.toLowerCase().replace(/\s+/g, '-')}`,
+          text: heading.content[0].text,
+          level: heading.attrs.level,
         }));
       setTableOfContents(toc);
     }
@@ -46,34 +46,34 @@ const DynamicBlogPage = () => {
   const nextBlog = blogs[currentIndex + 1];
 
   const renderContent = (content) => {
-    if (!Array.isArray(content)) {
+    if (!content || !Array.isArray(content.content)) {
       return <div>No content available</div>;
     }
 
-    return content.map((item, index) => {
+    return content.content.map((item, index) => {
       switch (item.type) {
         case 'heading':
-          if (!item.text) return null;
-          const HeadingTag = `h${item.level || 1}`;
-          const id = `heading-${item.text.toLowerCase().replace(/\s+/g, '-')}`;
-          return <HeadingTag key={index} id={id}>{item.text}</HeadingTag>;
+          if (!item.content || !item.content[0] || !item.content[0].text) return null;
+          const HeadingTag = `h${item.attrs.level || 1}`;
+          const id = `heading-${item.content[0].text.toLowerCase().replace(/\s+/g, '-')}`;
+          return <HeadingTag key={index} id={id}>{item.content[0].text}</HeadingTag>;
         case 'paragraph':
-          return <p key={index}>{item.text || ''}</p>;
+          return <p key={index}>{item.content ? item.content.map(c => c.text).join('') : ''}</p>;
         case 'image':
           return (
             <Dialog key={index}>
               <DialogTrigger>
-                <img src={item.src} alt={item.alt} className="my-4 cursor-pointer" />
+                <img src={item.attrs.src} alt={item.attrs.alt} className="my-4 cursor-pointer" />
               </DialogTrigger>
               <DialogContent className="max-w-3xl">
-                <img src={item.src} alt={item.alt} className="w-full" />
+                <img src={item.attrs.src} alt={item.attrs.alt} className="w-full" />
               </DialogContent>
             </Dialog>
           );
-        case 'code':
+        case 'codeBlock':
           return (
-            <SyntaxHighlighter key={index} language={item.language} style={tomorrow}>
-              {item.code || ''}
+            <SyntaxHighlighter key={index} language={item.attrs.language} style={tomorrow}>
+              {item.content ? item.content.map(c => c.text).join('') : ''}
             </SyntaxHighlighter>
           );
         default:
