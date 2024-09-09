@@ -18,12 +18,13 @@ const BlogDashboard = () => {
   const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedBlog, setSelectedBlog] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     if (data && data.blogs) {
       filterBlogs();
     }
-  }, [data, selectedTags, selectedBlog]);
+  }, [data, selectedTags, selectedBlog, searchTerm]);
 
   const filterBlogs = () => {
     if (!data || !data.blogs) return;
@@ -40,19 +41,35 @@ const BlogDashboard = () => {
       filtered = filtered.filter(blog => blog.id === selectedBlog.id);
     }
 
+    if (searchTerm) {
+      filtered = filtered.filter(blog =>
+        blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        blog.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
+
     setFilteredBlogs(filtered);
   };
 
-  const handleInputChange = () => {
-    // Do nothing, as we don't want to filter live
+  const handleInputChange = (value) => {
+    setSearchTerm(value);
   };
 
   const handleBlogSelect = (blog) => {
     setSelectedBlog(blog);
+    setSelectedTags(blog.tags);
   };
 
   const handleTagSelect = (tag) => {
-    setSelectedTags([...selectedTags, tag]);
+    if (!selectedTags.includes(tag)) {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
+
+  const clearFilters = () => {
+    setSelectedTags([]);
+    setSelectedBlog(null);
+    setSearchTerm('');
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -68,11 +85,14 @@ const BlogDashboard = () => {
         onInputChange={handleInputChange}
         onBlogSelect={handleBlogSelect}
         onTagSelect={handleTagSelect}
+        clearFilters={clearFilters}
       />
       <BlogList
         filteredBlogs={filteredBlogs}
+        allBlogs={data.blogs}
         selectedTags={selectedTags}
         selectedBlog={selectedBlog}
+        searchTerm={searchTerm}
       />
     </div>
   );

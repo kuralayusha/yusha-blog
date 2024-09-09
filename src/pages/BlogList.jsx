@@ -4,28 +4,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CalendarIcon, ArrowRightIcon } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
-const BlogList = ({ filteredBlogs, selectedTags, searchTerm }) => {
+const BlogList = ({ filteredBlogs, allBlogs, selectedTags, searchTerm }) => {
   const exactMatches = filteredBlogs.filter(blog => 
     selectedTags.every(tag => blog.tags.includes(tag))
   );
   const partialMatches = filteredBlogs.filter(blog => 
     !exactMatches.includes(blog) && selectedTags.some(tag => blog.tags.includes(tag))
   );
-  const otherBlogs = filteredBlogs.filter(blog => 
+  const otherBlogs = allBlogs.filter(blog => 
     !exactMatches.includes(blog) && !partialMatches.includes(blog)
   );
 
   const renderBlogSection = (blogs, title) => {
-    if (blogs.length === 0) {
-      return (
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-4">{title}</h2>
-          <p className="text-gray-600">
-            No blogs found matching {selectedTags.length > 0 ? selectedTags.join(', ') : searchTerm}
-          </p>
-        </div>
-      );
-    }
+    if (blogs.length === 0) return null;
 
     return (
       <div className="mb-6">
@@ -69,6 +60,10 @@ const BlogList = ({ filteredBlogs, selectedTags, searchTerm }) => {
     );
   };
 
+  if (filteredBlogs.length === 0 && !searchTerm && selectedTags.length === 0) {
+    return renderBlogSection(allBlogs, "All Blogs:");
+  }
+
   return (
     <div>
       {selectedTags.length > 0 ? (
@@ -78,9 +73,17 @@ const BlogList = ({ filteredBlogs, selectedTags, searchTerm }) => {
           {renderBlogSection(otherBlogs, "Other blogs:")}
         </>
       ) : searchTerm ? (
-        renderBlogSection(filteredBlogs, `Search results for "${searchTerm}":`)
+        <>
+          {renderBlogSection(filteredBlogs, `Search results for "${searchTerm}"`)}
+          {renderBlogSection(otherBlogs, "Other blogs:")}
+        </>
       ) : (
-        renderBlogSection(filteredBlogs, "All Blogs:")
+        renderBlogSection(allBlogs, "All Blogs:")
+      )}
+      {filteredBlogs.length === 0 && (searchTerm || selectedTags.length > 0) && (
+        <p className="text-gray-600">
+          No blogs found matching your criteria. Try adjusting your search or filters.
+        </p>
       )}
     </div>
   );
