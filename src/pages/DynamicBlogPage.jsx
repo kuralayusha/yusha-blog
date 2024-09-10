@@ -20,7 +20,7 @@ const BlogContent = ({ blog, tableOfContents }) => (
     <p className="text-gray-600 mb-4">
       By {blog.author} | {new Date(blog.date).toLocaleDateString()}
     </p>
-    <div className="lg:hidden mb-6">
+    <div className="lg:w-3/4 mb-6">
       <h2 className="text-xl font-bold mb-2">Table of Contents</h2>
       <ul>
         {tableOfContents.map((item, index) => (
