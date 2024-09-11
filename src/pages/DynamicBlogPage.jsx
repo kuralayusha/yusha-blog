@@ -62,9 +62,7 @@ const BlogCard = ({ blog }) => (
           alt={blog.title}
           className="w-full h-32 object-cover mb-2 rounded"
         />
-        <h2 className="text-lg font-semibold mb-1 line-clamp-2">
-          {blog.title}
-        </h2>
+        <h2 className="text-lg font-semibold mb-1 line-clamp-2">{blog.title}</h2>
         <p className="text-sm text-gray-600 mb-1">{blog.author}</p>
         <div className="flex items-center text-sm text-gray-500 mb-2">
           <CalendarIcon className="w-4 h-4 mr-1" />
@@ -91,33 +89,23 @@ const renderContent = (content) => {
     switch (item.type) {
       case "heading":
         const HeadingTag = `h${item.attrs.level || 1}`;
-        const id = `heading-${item.content[0]?.text
-          ?.toLowerCase()
-          .replace(/\s+/g, "-")}`;
-        const headingStyle = item.attrs.level === 1 ? "text-3xl font-bold mb-4" : "text-2xl font-semibold mb-3";
+        const id = `heading-${item.content[0]?.text?.toLowerCase().replace(/\s+/g, "-")}`;
+        const headingStyle = item.attrs.level === 1 ? "text-4xl font-bold mb-6" : "text-2xl font-semibold mb-4";
         return (
           <HeadingTag key={index} id={id} className={headingStyle}>
             {item.content[0]?.text}
           </HeadingTag>
         );
       case "paragraph":
-        return <p key={index} className="text-base mb-4">{item.content?.map((c) => c.text).join("")}</p>;
+        return <p key={index} className="text-lg mb-4">{item.content?.map((c) => c.text).join("")}</p>;
       case "image":
         return (
           <Dialog key={index}>
             <DialogTrigger>
-              <img
-                src={item.attrs.src}
-                alt={item.attrs.alt}
-                className="my-4 cursor-pointer"
-              />
+              <img src={item.attrs.src} alt={item.attrs.alt} className="my-4 cursor-pointer" />
             </DialogTrigger>
             <DialogContent className="max-w-3xl">
-              <img
-                src={item.attrs.src}
-                alt={item.attrs.alt}
-                className="w-full"
-              />
+              <img src={item.attrs.src} alt={item.attrs.alt} className="w-full" />
             </DialogContent>
           </Dialog>
         );
@@ -158,17 +146,21 @@ const renderContent = (content) => {
         return <hr key={index} className="my-4" />;
       case "table":
         return (
-          <table key={index} className="w-full border-collapse border border-gray-300 my-4">
-            {item.content.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {row.content.map((cell, cellIndex) => (
-                  <td key={cellIndex} className="border border-gray-300 p-2">
-                    {renderContent({ content: cell.content })}
-                  </td>
+          <div className="overflow-x-auto my-4">
+            <table key={index} className="w-full border-collapse border border-gray-300">
+              <tbody>
+                {item.content.map((row, rowIndex) => (
+                  <tr key={rowIndex} className={rowIndex === 0 ? "bg-gray-100" : ""}>
+                    {row.content.map((cell, cellIndex) => (
+                      <td key={cellIndex} className="border border-gray-300 p-2">
+                        {renderContent({ content: cell.content })}
+                      </td>
+                    ))}
+                  </tr>
                 ))}
-              </tr>
-            ))}
-          </table>
+              </tbody>
+            </table>
+          </div>
         );
       default:
         return null;
@@ -192,9 +184,7 @@ const DynamicBlogPage = () => {
       const toc = blog.content.content
         .filter((item) => item.type === "heading" && item.content?.[0]?.text)
         .map((heading) => ({
-          id: `heading-${heading.content[0].text
-            .toLowerCase()
-            .replace(/\s+/g, "-")}`,
+          id: `heading-${heading.content[0].text.toLowerCase().replace(/\s+/g, "-")}`,
           text: heading.content[0].text,
           level: heading.attrs.level,
         }));
