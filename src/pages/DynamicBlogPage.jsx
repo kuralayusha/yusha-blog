@@ -14,23 +14,29 @@ const fetchBlogs = async () => {
   return response.json();
 };
 
+const TableOfContents = ({ items }) => (
+  <div className="lg:w-1/4 lg:sticky lg:top-4 lg:self-start mb-6 lg:mb-0">
+    <h2 className="text-xl font-bold mb-2">Table of Contents</h2>
+    <ul>
+      {items.map((item, index) => (
+        <li key={index} className={`ml-${(item.level - 1) * 4}`}>
+          <a href={`#${item.id}`} className="text-blue-500 hover:underline">
+            {item.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
 const BlogContent = ({ blog, tableOfContents }) => (
   <div className="lg:w-3/4">
-    <h1 className="text-3xl font-bold mb-4">{blog.title}</h1>
+    <h1 className="text-4xl font-bold mb-4">{blog.title}</h1>
     <p className="text-gray-600 mb-4">
       By {blog.author} | {new Date(blog.date).toLocaleDateString()}
     </p>
-    <div className="lg:w-3/4 mb-6">
-      <h2 className="text-xl font-bold mb-2">Table of Contents</h2>
-      <ul>
-        {tableOfContents.map((item, index) => (
-          <li key={index} className={`ml-${(item.level - 1) * 4}`}>
-            <a href={`#${item.id}`} className="text-blue-500 hover:underline">
-              {item.text}
-            </a>
-          </li>
-        ))}
-      </ul>
+    <div className="lg:hidden mb-6">
+      <TableOfContents items={tableOfContents} />
     </div>
     {renderContent(blog.content)}
   </div>
@@ -76,28 +82,6 @@ const BlogCard = ({ blog }) => (
   </Card>
 );
 
-const AllBlogs = ({ allBlogs, currentBlogId }) => (
-  <div className="lg:w-1/4 hidden lg:block">
-    <div className="sticky top-4">
-      <h2 className="text-xl font-bold mb-4">All Blogs</h2>
-      <ul>
-        {allBlogs
-          .filter((blog) => blog.id !== currentBlogId)
-          .map((blog) => (
-            <li key={blog.id} className="mb-2">
-              <Link
-                to={`/${blog.slug}`}
-                className="text-blue-500 hover:underline"
-              >
-                {blog.title}
-              </Link>
-            </li>
-          ))}
-      </ul>
-    </div>
-  </div>
-);
-
 const renderContent = (content) => {
   if (!content || !Array.isArray(content.content)) {
     return <div>No content available</div>;
@@ -110,13 +94,14 @@ const renderContent = (content) => {
         const id = `heading-${item.content[0]?.text
           ?.toLowerCase()
           .replace(/\s+/g, "-")}`;
+        const headingStyle = item.attrs.level === 1 ? "text-3xl font-bold mb-4" : "text-2xl font-semibold mb-3";
         return (
-          <HeadingTag key={index} id={id}>
+          <HeadingTag key={index} id={id} className={headingStyle}>
             {item.content[0]?.text}
           </HeadingTag>
         );
       case "paragraph":
-        return <p key={index}>{item.content?.map((c) => c.text).join("")}</p>;
+        return <p key={index} className="text-base mb-4">{item.content?.map((c) => c.text).join("")}</p>;
       case "image":
         return (
           <Dialog key={index}>
@@ -142,9 +127,48 @@ const renderContent = (content) => {
             key={index}
             language={item.attrs.language}
             style={tomorrow}
+            className="my-4"
           >
             {item.content?.map((c) => c.text).join("")}
           </SyntaxHighlighter>
+        );
+      case "bullet_list":
+        return (
+          <ul key={index} className="list-disc pl-6 mb-4">
+            {item.content.map((listItem, listIndex) => (
+              <li key={listIndex}>{renderContent({ content: listItem.content })}</li>
+            ))}
+          </ul>
+        );
+      case "ordered_list":
+        return (
+          <ol key={index} className="list-decimal pl-6 mb-4">
+            {item.content.map((listItem, listIndex) => (
+              <li key={listIndex}>{renderContent({ content: listItem.content })}</li>
+            ))}
+          </ol>
+        );
+      case "blockquote":
+        return (
+          <blockquote key={index} className="border-l-4 border-gray-300 pl-4 italic my-4">
+            {renderContent({ content: item.content })}
+          </blockquote>
+        );
+      case "horizontal_rule":
+        return <hr key={index} className="my-4" />;
+      case "table":
+        return (
+          <table key={index} className="w-full border-collapse border border-gray-300 my-4">
+            {item.content.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {row.content.map((cell, cellIndex) => (
+                  <td key={cellIndex} className="border border-gray-300 p-2">
+                    {renderContent({ content: cell.content })}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </table>
         );
       default:
         return null;
@@ -202,8 +226,10 @@ const DynamicBlogPage = () => {
         </Button>
       </Link>
       <div className="lg:flex lg:space-x-8">
-        <AllBlogs allBlogs={data.blogs} currentBlogId={blog.id} />
         <BlogContent blog={blog} tableOfContents={tableOfContents} />
+        <div className="hidden lg:block">
+          <TableOfContents items={tableOfContents} />
+        </div>
       </div>
       <SimilarBlogs similarBlogs={similarBlogs} />
     </div>
