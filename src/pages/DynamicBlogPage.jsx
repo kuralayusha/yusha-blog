@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -87,7 +87,7 @@ const renderContent = (content) => {
 
   return content.content.map((item, index) => {
     switch (item.type) {
-      case "heading":
+      case "heading": {
         const HeadingTag = `h${item.attrs.level || 1}`;
         const id = `heading-${item.content[0]?.text?.toLowerCase().replace(/\s+/g, "-")}`;
         const headingStyle = item.attrs.level === 1 ? "text-4xl font-bold mb-6" : "text-2xl font-semibold mb-4";
@@ -96,6 +96,7 @@ const renderContent = (content) => {
             {item.content[0]?.text}
           </HeadingTag>
         );
+      }
       case "paragraph":
         return <p key={index} className="text-lg mb-4">{item.content?.map((c) => c.text).join("")}</p>;
       case "image":

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import BlogList from './BlogList';
 import TagInput from './TagInput';
@@ -21,12 +21,6 @@ const BlogDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    if (data && data.blogs) {
-      filterBlogs();
-    }
-  }, [data, selectedTags, selectedBlog]);
-
-  const filterBlogs = () => {
     if (!data || !data.blogs) return;
 
     let filtered = data.blogs;
@@ -42,7 +36,7 @@ const BlogDashboard = () => {
     }
 
     setFilteredBlogs(filtered);
-  };
+  }, [data, selectedTags, selectedBlog]);
 
   const handleInputChange = (value) => {
     setSearchTerm(value);
@@ -51,14 +45,12 @@ const BlogDashboard = () => {
   const handleBlogSelect = (blog) => {
     setSelectedBlog(blog);
     setSelectedTags(blog.tags);
-    filterBlogs();
   };
 
   const handleTagSelect = (tag) => {
     if (!selectedTags.includes(tag)) {
       setSelectedTags([...selectedTags, tag]);
     }
-    filterBlogs();
   };
 
   const clearFilters = () => {
